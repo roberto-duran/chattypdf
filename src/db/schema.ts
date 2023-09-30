@@ -6,8 +6,13 @@ import {
   primaryKey,
   integer,
   uniqueIndex,
+  uuid,
+  pgEnum,
+  smallint,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
+
+export const AuthorsEnum = pgEnum("authors", ["user", "system"]);
 
 export const users = pgTable("user", {
   id: text("id").notNull().primaryKey(),
@@ -59,6 +64,24 @@ export const verificationTokens = pgTable(
     compoundKey: primaryKey(vt.identifier, vt.token),
   })
 );
+
+export const chats = pgTable("chat", {
+  id: uuid("id").notNull().defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  userId: text("userId")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  documentId: integer("documentId"),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
+
+export const messages = pgTable("message", {
+  id: serial("id").notNull().primaryKey(),
+  text: text("text").notNull(),
+  author: AuthorsEnum("authors").notNull(),
+  chatId: uuid("chatId").notNull(),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});
 
 export const documents = pgTable(
   "document",
