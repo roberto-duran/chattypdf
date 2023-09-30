@@ -19,7 +19,7 @@ export default function Login () {
       </h1>
       <div className='flex flex-col space-y-3 text-gray-800'>
         <button
-          onClick={() => signIn('google', { callbackUrl: '/' })}
+          onClick={() => signIn('google', { callbackUrl: '/dashboard' })}
           className='flex justify-between btn bg-gray-100 hover:bg-gray-300
                     hover:text-gray-800'
         >
@@ -27,7 +27,7 @@ export default function Login () {
           <span className='w-30 flex-grow-2'>Sign in with Google</span>
         </button>
         <button
-          onClick={() => signIn('github', { callbackUrl: '/' })}
+          onClick={() => signIn('github', { callbackUrl: '/dashboard' })}
           className='flex justify-between btn bg-gray-100 hover:bg-gray-300
                     hover:text-gray-800'
         >

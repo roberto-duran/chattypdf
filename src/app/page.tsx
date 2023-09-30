@@ -15,12 +15,12 @@ export default function Home () {
           className='border border-slate-700 bg-slate-900 rounded-full py-2 px-4 text-gray-200 text-sm mb-5'
         >
           Clone and create your own version{' '}
-          <span className='text-blue-600'>Github</span>
+          <span className='text-teal-500'>Github</span>
         </Link>
         <div className='bg-radian flex flex-col items-center gap-5'>
           <h1 className='mx-auto max-w-4xl font-display text-5xl font-semibold tracking-normal text-gray-300 sm:text-6xl'>
-            Analize/Sumarize your pdf's{' '}
-            <span className='relative whitespace-nowrap text-blue-800'>
+            Analize/Sumarize your pdf&rsquo;s{' '}
+            <span className='relative whitespace-nowrap text-teal-500'>
               <span className='relative'>using AI</span>
             </span>{' '}
             for free.
@@ -29,7 +29,7 @@ export default function Home () {
             className='btn btn-outline btn-wide cool-btn'
             href='/auth/login'
           >
-            Chat with your PDF's
+            Chat with your PDF&rsquo;s
           </Link>
           <h2 className='mx-auto max-w-xl text-lg text-gray-300 leading-7'>
             Snap a chat PDF and explore its contents effortlessly. Totally free

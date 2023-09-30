@@ -1,6 +1,7 @@
 'use client'
 import Image from 'next/image'
 import { signOut } from 'next-auth/react'
+import Link from 'next/link'
 
 type UserProfileMenuProps = {
   userAvatar: string | null | undefined
@@ -21,13 +22,12 @@ export default function UserProfileMenu ({ userAvatar }: UserProfileMenuProps) {
       </label>
       <ul
         tabIndex={0}
-        className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52'
+        className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-teal-500'
       >
         <li>
-          <a className='justify-between'>
-            Profile
-            <span className='badge'>New</span>
-          </a>
+          <Link href='/dashboard' className='justify-between'>
+            Dashboard
+          </Link>
         </li>
         <li>
           <button onClick={() => signOut({ callbackUrl: '/' })}>Logout</button>

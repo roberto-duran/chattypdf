@@ -14,7 +14,7 @@ export const authOptions: NextAuthOptions = {
   },
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
-    signIn: "/dashboard",
+    signIn: "/auth/login",
   },
   providers: [
     GithubProvider({
