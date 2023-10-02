@@ -15,6 +15,13 @@
       "when": 1696107228775,
       "tag": "0001_careful_dazzler",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "5",
+      "when": 1696281081824,
+      "tag": "0002_tan_nitro",
+      "breakpoints": true
     }
   ]
 }

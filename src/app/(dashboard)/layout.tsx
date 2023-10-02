@@ -1,6 +1,7 @@
 import './dashboard.module.css'
 import type { Metadata } from 'next'
 import DashboardHeader from './components/DashboardHeader'
+import { redirect } from 'next/navigation'
 import { getSession } from '@/lib/auth/session'
 
 export const metadata: Metadata = {
@@ -14,11 +15,15 @@ export default async function DashboardLayout ({
   children: React.ReactNode
 }) {
   const session = await getSession()
-  const userAvatar = session?.user?.image
+  if (!session) {
+    redirect('/auth/login')
+  }
+  const userAvatar = session.user.image
+
   return (
-    <>
+    <main className='h-screen flex flex-col'>
       <DashboardHeader userAvatar={userAvatar} />
-      <main>{children}</main>
-    </>
+      <section className='flex-1'>{children}</section>
+    </main>
   )
 }

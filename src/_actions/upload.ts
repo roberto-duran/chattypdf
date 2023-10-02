@@ -19,8 +19,7 @@ export async function getSignature(): Promise<Signature> {
 
   const signature = cloudinary.utils.api_sign_request(
     { timestamp, folder: "next" },
-    //@ts-ignore
-    cloudinaryConfig.api_secret
+    cloudinaryConfig.api_secret!
   );
 
   return { timestamp, signature };
@@ -35,11 +34,9 @@ export async function saveToDatabase({
   version: string;
   signature: string;
 }) {
-  // verify the data the ts-ignores are bcs cloudinary is not typed
   const expectedSignature = cloudinary.utils.api_sign_request(
     { public_id, version },
-    //@ts-ignore
-    cloudinaryConfig.api_secret
+    cloudinaryConfig.api_secret!
   );
 
   if (expectedSignature === signature) {

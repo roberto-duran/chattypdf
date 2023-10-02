@@ -8,7 +8,6 @@ import {
   uniqueIndex,
   uuid,
   pgEnum,
-  smallint,
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
@@ -91,6 +90,7 @@ export const documents = pgTable(
     size: integer("size").notNull(),
     type: text("type").notNull(),
     mime: text("mime").notNull(),
+    slug: text("slug").notNull(),
     userId: text("userId")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),

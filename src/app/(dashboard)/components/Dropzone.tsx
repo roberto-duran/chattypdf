@@ -1,49 +1,56 @@
 'use client'
 
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { getSignature, saveToDatabase } from '@/_actions/upload'
 import { toast } from 'react-hot-toast'
 import { BiUpload } from 'react-icons/bi'
 
-export interface DropFile extends File {
-  preview: string
-}
-
 type DropzoneProps = {
   className?: string
 }
 
+type PDFViewerProps = {
+  file: File
+}
+
+const PDFViewer = ({ file }: PDFViewerProps) => {
+  return (
+    <article className='w-full space-y-4'>
+      <h2 className='text-center'>{file.name}</h2>
+      <object
+        data={URL.createObjectURL(file)}
+        type='application/pdf'
+        width='100%'
+        height='600px'
+      />
+    </article>
+  )
+}
+
 const Dropzone = ({ className }: DropzoneProps) => {
-  const [file, setFile] = useState<DropFile>()
+  const [file, setFile] = useState<File>()
 
-  useEffect(() => {
-    if (file) {
-      action()
-    }
-  }, [file])
-
-  const onDrop = useCallback((acceptedFiles: DropFile[]) => {
+  const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles?.length) {
       const attachement = acceptedFiles[0]
-      if (attachement.size > 4 * 1024 * 1024) {
+      if (attachement.size! > 4 * 1024 * 1024) {
         // bigger than 4mb!
         toast.error('File too large')
         return
       }
       setFile(attachement)
-      action()
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    accept: {
-      'pdf/*': ['.pdf']
-    },
-    maxFiles: 1,
-    // @ts-ignore //after feature is finish review this type error
-    onDrop
-  })
+  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
+    useDropzone({
+      accept: {
+        'application/pdf': ['.pdf']
+      },
+      maxFiles: 1,
+      onDrop
+    })
 
   async function action () {
     if (!file) return
@@ -81,21 +88,36 @@ const Dropzone = ({ className }: DropzoneProps) => {
           className: className
         })}
       >
-        <div className='flex flex-col text-muted-foreground rounded-lg cursor-pointer px-4 py-2 outline-dashed outline-2 outline-offset-2'>
-          <div className='text-sm'>
+        <div className='rounded-lg cursor-pointer p-10 outline-dashed outline-2 outline-teal-500 outline-offset-2 bg-white'>
+          <div className='text-xl'>
             <input {...getInputProps({ name: 'file' })} />
-            <div className='flex gap-2 items-center justify-start'>
-              <BiUpload className='h-4 w-4 fill-current' />
-              {isDragActive ? (
-                <p>Drop the file here ...</p>
-              ) : (
-                <p>Drag & drop a file here, or click to select files</p>
-              )}
+            <div className='flex flex-col gap-2 items-center justify-start'>
+              <BiUpload className='h-14 w-14 fill-current text-teal-500' />
+              <div className='flex flex-col items-center w-full text-slate-500'>
+                {isDragActive ? (
+                  <p>Drop the file here ...</p>
+                ) : (
+                  <p>Drag & drop a file here</p>
+                )}
+                <div className='divider'>OR</div>
+                <button className='btn btn-outline btn-wide bg-gradient-to-r from-slate-700 to-slate-900 border-slate-700 text-teal-300 hover:text-teal-100'>
+                  Browse files
+                </button>
+              </div>
             </div>
           </div>
-          {/* selected image container */}
-          {file && <label className='text-xs'>{file.name}</label>}
         </div>
+      </div>
+      <div className='flex flex-col items-center gap-6 mt-10 '>
+        {file ? (
+          <button className='btn btn-outline btn-wide cool-btn text-teal-300'>
+            Use This Document
+          </button>
+        ) : (
+          ''
+        )}
+        {/* selected image container */}
+        {file && <PDFViewer file={file} />}
       </div>
     </form>
   )
