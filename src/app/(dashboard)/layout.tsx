@@ -15,14 +15,14 @@ export default async function DashboardLayout ({
   children: React.ReactNode
 }) {
   const session = await getSession()
+
   if (!session) {
     redirect('/auth/login')
   }
-  const userAvatar = session.user.image
 
   return (
     <main className='h-screen flex flex-col'>
-      <DashboardHeader userAvatar={userAvatar} />
+      <DashboardHeader userAvatar={session?.user.image} />
       <section className='flex-1'>{children}</section>
     </main>
   )

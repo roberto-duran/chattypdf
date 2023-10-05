@@ -100,3 +100,12 @@ export const documents = pgTable(
     nameIndex: uniqueIndex("documents_name_idx").on(document.name),
   })
 );
+
+export const documentEmbeddings = pgTable("documentEmbedding", {
+  id: serial("id").notNull().primaryKey(),
+  documentId: integer("documentId").notNull(),
+  documentPage: integer("documentPage").notNull(),
+  documentText: text("documentText").notNull(),
+  embedding: text("embedding").notNull(),
+  created_at: timestamp("created_at").notNull().defaultNow(),
+});

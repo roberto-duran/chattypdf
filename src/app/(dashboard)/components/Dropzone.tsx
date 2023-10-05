@@ -2,30 +2,13 @@
 
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { getSignature, saveToDatabase } from '@/_actions/upload'
+import { getSignature, createChat } from '@/_actions/ai_file_processor'
 import { toast } from 'react-hot-toast'
 import { BiUpload } from 'react-icons/bi'
+import PDFViewer from './PDFViewer'
 
 type DropzoneProps = {
   className?: string
-}
-
-type PDFViewerProps = {
-  file: File
-}
-
-const PDFViewer = ({ file }: PDFViewerProps) => {
-  return (
-    <article className='w-full space-y-4'>
-      <h2 className='text-center'>{file.name}</h2>
-      <object
-        data={URL.createObjectURL(file)}
-        type='application/pdf'
-        width='100%'
-        height='600px'
-      />
-    </article>
-  )
 }
 
 const Dropzone = ({ className }: DropzoneProps) => {
@@ -43,29 +26,27 @@ const Dropzone = ({ className }: DropzoneProps) => {
     }
   }, [])
 
-  const { getRootProps, getInputProps, isDragActive, acceptedFiles } =
-    useDropzone({
-      accept: {
-        'application/pdf': ['.pdf']
-      },
-      maxFiles: 1,
-      onDrop
-    })
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    accept: {
+      'application/pdf': ['.pdf']
+    },
+    maxFiles: 1,
+    onDrop
+  })
 
-  async function action () {
+  async function handleSubmit () {
     if (!file) return
 
     // get a signature using server action
     const { timestamp, signature } = await getSignature()
 
-    // upload to cloudinary using the signature
     const formData = new FormData()
 
     formData.append('file', file)
     formData.append('api_key', process.env.NEXT_PUBLIC_CLOUDINARY_API_KEY!)
     formData.append('signature', signature)
     formData.append('timestamp', timestamp)
-    formData.append('folder', 'next')
+    formData.append('folder', 'pdf')
 
     const endpoint = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_URL as string
     const data = await fetch(endpoint, {
@@ -74,15 +55,17 @@ const Dropzone = ({ className }: DropzoneProps) => {
     }).then(res => res.json())
 
     // write to database using server actions
-    await saveToDatabase({
-      version: data?.version,
-      signature: data?.signature,
-      public_id: data?.public_id
+    await createChat({
+      version: data.version,
+      url: data.secure_url,
+      original_filename: data.original_filename,
+      signature: data.signature,
+      public_id: data.public_id
     })
   }
 
   return (
-    <form>
+    <form action={handleSubmit}>
       <div
         {...getRootProps({
           className: className
@@ -110,14 +93,22 @@ const Dropzone = ({ className }: DropzoneProps) => {
       </div>
       <div className='flex flex-col items-center gap-6 mt-10 '>
         {file ? (
-          <button className='btn btn-outline btn-wide cool-btn text-teal-300'>
+          <button
+            className='btn btn-outline btn-wide cool-btn text-teal-300'
+            type='submit'
+          >
             Use This Document
           </button>
         ) : (
           ''
         )}
-        {/* selected image container */}
-        {file && <PDFViewer file={file} />}
+        {/* selected PDF container */}
+        {file && (
+          <article className='w-full space-y-4'>
+            <h2 className='text-center'>{file.name}</h2>
+            <PDFViewer file={file} />
+          </article>
+        )}
       </div>
     </form>
   )

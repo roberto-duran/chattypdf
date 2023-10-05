@@ -18,29 +18,38 @@ export async function getSignature(): Promise<Signature> {
   const timestamp: string = Math.round(new Date().getTime() / 1000).toString();
 
   const signature = cloudinary.utils.api_sign_request(
-    { timestamp, folder: "next" },
+    { timestamp, folder: "pdf" },
     cloudinaryConfig.api_secret!
   );
 
   return { timestamp, signature };
 }
 
-export async function saveToDatabase({
-  public_id,
-  version,
-  signature,
-}: {
+type UploadResponse = {
   public_id: string;
   version: string;
   signature: string;
-}) {
+  original_filename: string;
+  url: string;
+};
+
+export async function createChat({
+  public_id,
+  version,
+  signature,
+  original_filename,
+  url,
+}: UploadResponse) {
   const expectedSignature = cloudinary.utils.api_sign_request(
     { public_id, version },
     cloudinaryConfig.api_secret!
   );
-
   if (expectedSignature === signature) {
     // safe to write to database
     console.log({ public_id });
   }
+}
+
+async function _generateEmbeddingsFromUrl(url: string) {
+  //create embeddings using openai text-adda
 }
