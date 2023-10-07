@@ -3,7 +3,6 @@
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { getSignature, createChat } from '@/_actions/ai_file_processor'
-import { toast } from 'react-hot-toast'
 import { BiUpload } from 'react-icons/bi'
 import PDFViewer from './PDFViewer'
 
@@ -19,7 +18,7 @@ const Dropzone = ({ className }: DropzoneProps) => {
       const attachement = acceptedFiles[0]
       if (attachement.size! > 4 * 1024 * 1024) {
         // bigger than 4mb!
-        toast.error('File too large')
+        // TODO ADD ERRORS Alerts
         return
       }
       setFile(attachement)

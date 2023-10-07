@@ -1,6 +1,7 @@
 "use server";
 
 import { v2 as cloudinary } from "cloudinary";
+import { getSession } from "@/lib/auth/session";
 
 const cloudinaryConfig = cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME,
@@ -16,7 +17,10 @@ type Signature = {
 
 export async function getSignature(): Promise<Signature> {
   const timestamp: string = Math.round(new Date().getTime() / 1000).toString();
-
+  const session = await getSession();
+  if (!session) {
+    throw new Error("No session found");
+  }
   const signature = cloudinary.utils.api_sign_request(
     { timestamp, folder: "pdf" },
     cloudinaryConfig.api_secret!
@@ -46,7 +50,6 @@ export async function createChat({
   );
   if (expectedSignature === signature) {
     // safe to write to database
-    console.log({ public_id });
   }
 }
 
