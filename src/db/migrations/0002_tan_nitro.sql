@@ -1,1 +1,0 @@
-ALTER TABLE "document" ADD COLUMN "slug" text NOT NULL;

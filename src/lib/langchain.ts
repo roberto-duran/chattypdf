@@ -1,6 +1,9 @@
 import { PDFLoader } from "langchain/document_loaders/fs/pdf";
+import { TokenTextSplitter } from "langchain/text_splitter";
 import { createEmbedding } from "./embeddings";
-import { documentEmbeddings } from "@/db/schema";
+import { downloadPDF } from "./document";
+import { CreateEmbeddingResponse } from "openai";
+
 type PDF = {
   pageContent: string;
   metadata: {
@@ -8,39 +11,36 @@ type PDF = {
   };
 };
 
-export async function generateEmbeddingsFromUrl(url: string) {
-  const loader = new PDFLoader(url);
+export async function generateEmbeddingsFrom(url: string) {
+  const file_name = `/tmp/doc${Date.now().toString()}.pdf`;
+  await downloadPDF(url, file_name);
+  if (!file_name) {
+    throw new Error("could not download from s3");
+  }
+
+  const loader = new PDFLoader(file_name);
   const pages = (await loader.load()) as PDF[];
 
   // 2. split and segment the pdf
   const documents = await Promise.all(pages.map(prepareDocument));
-  console.log("documents", documents);
   // 3. vectorise and embed individual documents
-  // const vectors = await Promise.all(documents.flat().map(embedDocument));
-
+  const vectors = await Promise.all(documents.flat().map(embedDocument));
+  console.log("vectors", vectors);
   //
 
   return documents[0];
 }
 
-// async function embedDocument(doc: typeof documentEmbeddings) {
-//   try {
-//     const embeddings = await createEmbedding(doc.documentText);
-//     const hash = md5(doc.pageContent);
-
-//     return {
-//       id: hash,
-//       values: embeddings,
-//       metadata: {
-//         text: doc.metadata.text,
-//         pageNumber: doc.metadata.pageNumber,
-//       },
-//     } as PineconeRecord;
-//   } catch (error) {
-//     console.log("error embedding document", error);
-//     throw error;
-//   }
-// }
+async function embedDocument(doc: PDF): Promise<CreateEmbeddingResponse> {
+  try {
+    console.log("doc", doc);
+    const embeddings = await createEmbedding(doc.pageContent);
+    return embeddings;
+  } catch (error) {
+    console.error("error embedding document", error);
+    throw error;
+  }
+}
 
 export const truncateStringByBytes = (str: string, bytes: number) => {
   const enc = new TextEncoder();
@@ -48,8 +48,13 @@ export const truncateStringByBytes = (str: string, bytes: number) => {
 };
 
 async function prepareDocument(page: PDF) {
-  let { pageContent } = page;
+  let { pageContent, metadata } = page;
   pageContent = pageContent.replace(/\n/g, "");
-
-  return pageContent;
+  const splitter = new TokenTextSplitter({
+    encodingName: "gpt2",
+    chunkSize: 256,
+    chunkOverlap: 0,
+  });
+  const output = await splitter.createDocuments([pageContent]);
+  return output;
 }

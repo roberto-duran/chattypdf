@@ -1,8 +1,8 @@
 {
   "version": "5",
   "dialect": "pg",
-  "id": "8842bfc1-fa12-4f7b-9699-cc59c1300d97",
-  "prevId": "cfc1c78a-bfee-4999-b1d0-ed3a7f1cb52c",
+  "id": "abf2953d-9089-467e-8020-bf6fbe641f20",
+  "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "account": {
       "name": "account",
@@ -158,6 +158,53 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
+    "documentEmbedding": {
+      "name": "documentEmbedding",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "serial",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "documentId": {
+          "name": "documentId",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "documentPage": {
+          "name": "documentPage",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "documentText": {
+          "name": "documentText",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "embedding": {
+          "name": "embedding",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {}
+    },
     "document": {
       "name": "document",
       "schema": "",
@@ -192,8 +239,20 @@
           "primaryKey": false,
           "notNull": true
         },
-        "userId": {
-          "name": "userId",
+        "url": {
+          "name": "url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "slug": {
+          "name": "slug",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "chatId": {
+          "name": "chatId",
           "type": "text",
           "primaryKey": false,
           "notNull": true
@@ -216,12 +275,12 @@
         }
       },
       "foreignKeys": {
-        "document_userId_user_id_fk": {
-          "name": "document_userId_user_id_fk",
+        "document_chatId_chat_id_fk": {
+          "name": "document_chatId_chat_id_fk",
           "tableFrom": "document",
-          "tableTo": "user",
+          "tableTo": "chat",
           "columnsFrom": [
-            "userId"
+            "chatId"
           ],
           "columnsTo": [
             "id"

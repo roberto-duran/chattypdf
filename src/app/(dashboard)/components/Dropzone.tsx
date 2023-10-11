@@ -4,6 +4,7 @@ import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { getSignature, createChat } from '@/_actions/ai_file_processor'
 import { BiUpload } from 'react-icons/bi'
+import toast, { Toaster } from 'react-hot-toast'
 import PDFViewer from './PDFViewer'
 
 type DropzoneProps = {
@@ -15,10 +16,10 @@ const Dropzone = ({ className }: DropzoneProps) => {
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles?.length) {
-      const attachement = acceptedFiles[0]
+      const attachement = acceptedFiles[0] // only one file allowed
       if (attachement.size! > 4 * 1024 * 1024) {
         // bigger than 4mb!
-        // TODO ADD ERRORS Alerts
+        toast.error('File size is too big!')
         return
       }
       setFile(attachement)
@@ -30,7 +31,10 @@ const Dropzone = ({ className }: DropzoneProps) => {
       'application/pdf': ['.pdf']
     },
     maxFiles: 1,
-    onDrop
+    onDrop,
+    onDropRejected: () => {
+      toast.error('Only PDF files are allowed!')
+    }
   })
 
   async function handleSubmit () {
@@ -46,7 +50,7 @@ const Dropzone = ({ className }: DropzoneProps) => {
     formData.append('signature', signature)
     formData.append('timestamp', timestamp)
     formData.append('folder', 'pdf')
-
+    console.log('file', file)
     const endpoint = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_URL as string
     const data = await fetch(endpoint, {
       method: 'POST',
@@ -92,12 +96,17 @@ const Dropzone = ({ className }: DropzoneProps) => {
       </div>
       <div className='flex flex-col items-center gap-6 mt-10 '>
         {file ? (
-          <button
-            className='btn btn-outline btn-wide cool-btn text-teal-300'
-            type='submit'
+          <div
+            className='tooltip'
+            data-tip='In this iteration only one document is alowed'
           >
-            Use This Document
-          </button>
+            <button
+              className='btn btn-outline btn-wide cool-btn text-teal-300'
+              type='submit'
+            >
+              Use This Document
+            </button>
+          </div>
         ) : (
           ''
         )}
@@ -109,6 +118,7 @@ const Dropzone = ({ className }: DropzoneProps) => {
           </article>
         )}
       </div>
+      <Toaster />
     </form>
   )
 }

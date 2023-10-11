@@ -90,10 +90,11 @@ export const documents = pgTable(
     size: integer("size").notNull(),
     type: text("type").notNull(),
     mime: text("mime").notNull(),
+    url: text("url").notNull(),
     slug: text("slug").notNull(),
-    userId: text("userId")
+    chatId: text("chatId")
       .notNull()
-      .references(() => users.id, { onDelete: "cascade" }),
+      .references(() => chats.id, { onDelete: "cascade" }),
     created_at: timestamp("created_at").notNull().defaultNow(),
   },
   (document) => ({

@@ -2,6 +2,7 @@
 
 import { v2 as cloudinary } from "cloudinary";
 import { getSession } from "@/lib/auth/session";
+import { generateEmbeddingsFrom } from "@/lib/langchain";
 
 const cloudinaryConfig = cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME,
@@ -48,11 +49,9 @@ export async function createChat({
     { public_id, version },
     cloudinaryConfig.api_secret!
   );
-  if (expectedSignature === signature) {
-    // safe to write to database
-  }
-}
 
-async function _generateEmbeddingsFromUrl(url: string) {
-  //create embeddings using openai text-adda
+  // this mean that the file was uploaded successfully
+  if (expectedSignature === signature) {
+    generateEmbeddingsFrom(url);
+  }
 }
