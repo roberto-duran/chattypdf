@@ -23,37 +23,49 @@ export async function generateEmbeddingsFrom(url: string, document_id: number) {
   // 2. split and segment the pdf
   const documents = await Promise.all(pages.map(prepareDocument));
   // 3. vectorise and embed individual documents
+  //@ts-ignore
   const vectors = await Promise.all(documents.flat().map(embedDocument));
-  console.log("vectors", vectors);
   //
 
-  return documents[0];
+  return vectors;
 }
 
 async function embedDocument(doc: PDF) {
   try {
-    console.log("doc", doc);
     const embeddings = await createEmbedding(doc.pageContent);
-    return embeddings;
+    const docEmbedding = {
+      embedding: embeddings.data[0].embedding,
+      documentPage: doc.metadata.loc.pageNumber,
+      documentText: doc.pageContent,
+    };
+    return docEmbedding;
   } catch (error) {
     console.error("error embedding document", error);
     throw error;
   }
 }
 
-export const truncateStringByBytes = (str: string, bytes: number) => {
-  const enc = new TextEncoder();
-  return new TextDecoder("utf-8").decode(enc.encode(str).slice(0, bytes));
-};
-
 async function prepareDocument(page: PDF) {
-  let { pageContent, metadata } = page;
+  let { pageContent } = page;
   pageContent = pageContent.replace(/\n/g, "");
   const splitter = new TokenTextSplitter({
     encodingName: "gpt2",
     chunkSize: 256,
     chunkOverlap: 0,
   });
-  const output = await splitter.createDocuments([pageContent]);
-  return output;
+
+  const outputs = await splitter.createDocuments([pageContent]);
+  const documentsPerPage = [];
+
+  for (const document of outputs) {
+    const prepareDocument = {
+      pageContent: document.pageContent,
+      metadata: {
+        loc: { pageNumber: page.metadata.loc.pageNumber },
+      },
+    };
+    documentsPerPage.push(prepareDocument);
+  }
+
+  return documentsPerPage;
 }

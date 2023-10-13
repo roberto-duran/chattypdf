@@ -77,6 +77,7 @@ export async function generateChatAI({
       chatId: chat_id as string,
     });
 
-    await generateEmbeddingsFrom(url, document_id as number);
+    const embeddings = await generateEmbeddingsFrom(url, document_id as number);
+    console.log("embeddings", embeddings);
   }
 }
