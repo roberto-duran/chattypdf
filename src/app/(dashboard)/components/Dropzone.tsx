@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { getSignature, createChat } from '@/_actions/ai_file_processor'
+import { getSignature, generateChatAI } from '@/_actions/ai_file_processor'
 import { BiUpload } from 'react-icons/bi'
 import toast, { Toaster } from 'react-hot-toast'
 import PDFViewer from './PDFViewer'
@@ -58,12 +58,13 @@ const Dropzone = ({ className }: DropzoneProps) => {
     }).then(res => res.json())
 
     // write to database using server actions
-    await createChat({
+    await generateChatAI({
       version: data.version,
       url: data.secure_url,
       original_filename: data.original_filename,
       signature: data.signature,
-      public_id: data.public_id
+      public_id: data.public_id,
+      size: file.size
     })
   }
 

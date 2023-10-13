@@ -1,6 +1,5 @@
 import Chat from '@/app/(dashboard)/components/Chat'
 import PDFViewer from '@/app/(dashboard)/components/PDFViewer'
-import React from 'react'
 
 export default function ChatDetail () {
   const url =

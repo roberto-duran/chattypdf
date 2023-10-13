@@ -11,6 +11,8 @@ import {
 } from "drizzle-orm/pg-core";
 import type { AdapterAccount } from "@auth/core/adapters";
 
+import { vector } from "./custonTypes/vector";
+
 export const AuthorsEnum = pgEnum("authors", ["user", "system"]);
 
 export const users = pgTable("user", {
@@ -67,10 +69,10 @@ export const verificationTokens = pgTable(
 export const chats = pgTable("chat", {
   id: uuid("id").notNull().defaultRandom().primaryKey(),
   name: text("name").notNull(),
+  slug: text("slug").notNull(),
   userId: text("userId")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
-  documentId: integer("documentId"),
   created_at: timestamp("created_at").notNull().defaultNow(),
 });
 
@@ -91,10 +93,7 @@ export const documents = pgTable(
     type: text("type").notNull(),
     mime: text("mime").notNull(),
     url: text("url").notNull(),
-    slug: text("slug").notNull(),
-    chatId: text("chatId")
-      .notNull()
-      .references(() => chats.id, { onDelete: "cascade" }),
+    chatId: text("chatId").notNull(),
     created_at: timestamp("created_at").notNull().defaultNow(),
   },
   (document) => ({
@@ -107,6 +106,6 @@ export const documentEmbeddings = pgTable("documentEmbedding", {
   documentId: integer("documentId").notNull(),
   documentPage: integer("documentPage").notNull(),
   documentText: text("documentText").notNull(),
-  embedding: text("embedding").notNull(),
+  embedding: vector("embedding", { dimension: 1536 }).notNull(),
   created_at: timestamp("created_at").notNull().defaultNow(),
 });

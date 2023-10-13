@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation'
-import { getFirstDocumentByUser } from '@/models/documents'
+import { getFirstChatByUser } from '@/db/models/chats'
 import { getSession } from '@/lib/auth/session'
 
 export default async function DashboardPage () {
@@ -9,6 +9,6 @@ export default async function DashboardPage () {
     redirect('/auth/login')
   }
 
-  const document = await getFirstDocumentByUser(session?.user.id!)
-  redirect(`/dashboard/${document ? `chat/${document.slug}` : 'new'}`)
+  const chat = await getFirstChatByUser(session.user.id)
+  redirect(`/dashboard/${chat ? `chat/${chat.slug}` : 'new'}`)
 }

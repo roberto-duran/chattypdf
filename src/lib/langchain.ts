@@ -2,7 +2,6 @@ import { PDFLoader } from "langchain/document_loaders/fs/pdf";
 import { TokenTextSplitter } from "langchain/text_splitter";
 import { createEmbedding } from "./embeddings";
 import { downloadPDF } from "./document";
-import { CreateEmbeddingResponse } from "openai";
 
 type PDF = {
   pageContent: string;
@@ -11,7 +10,7 @@ type PDF = {
   };
 };
 
-export async function generateEmbeddingsFrom(url: string) {
+export async function generateEmbeddingsFrom(url: string, document_id: number) {
   const file_name = `/tmp/doc${Date.now().toString()}.pdf`;
   await downloadPDF(url, file_name);
   if (!file_name) {
@@ -31,7 +30,7 @@ export async function generateEmbeddingsFrom(url: string) {
   return documents[0];
 }
 
-async function embedDocument(doc: PDF): Promise<CreateEmbeddingResponse> {
+async function embedDocument(doc: PDF) {
   try {
     console.log("doc", doc);
     const embeddings = await createEmbedding(doc.pageContent);

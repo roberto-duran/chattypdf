@@ -1,3 +1,9 @@
+DO $$ BEGIN
+ CREATE TYPE "authors" AS ENUM('user', 'system');
+EXCEPTION
+ WHEN duplicate_object THEN null;
+END $$;
+--> statement-breakpoint
 CREATE TABLE IF NOT EXISTS "account" (
 	"userId" text NOT NULL,
 	"type" text NOT NULL,
@@ -16,8 +22,17 @@ CREATE TABLE IF NOT EXISTS "account" (
 CREATE TABLE IF NOT EXISTS "chat" (
 	"id" uuid PRIMARY KEY DEFAULT gen_random_uuid() NOT NULL,
 	"name" text NOT NULL,
+	"slug" text NOT NULL,
 	"userId" text NOT NULL,
-	"documentId" integer,
+	"created_at" timestamp DEFAULT now() NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE IF NOT EXISTS "documentEmbedding" (
+	"id" serial PRIMARY KEY NOT NULL,
+	"documentId" integer NOT NULL,
+	"documentPage" integer NOT NULL,
+	"documentText" text NOT NULL,
+	"embedding" vector(1536) NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
 --> statement-breakpoint
@@ -28,7 +43,6 @@ CREATE TABLE IF NOT EXISTS "document" (
 	"type" text NOT NULL,
 	"mime" text NOT NULL,
 	"url" text NOT NULL,
-	"slug" text NOT NULL,
 	"chatId" text NOT NULL,
 	"created_at" timestamp DEFAULT now() NOT NULL
 );
@@ -64,7 +78,6 @@ CREATE TABLE IF NOT EXISTS "verificationToken" (
 );
 --> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "documents_name_idx" ON "document" ("name");--> statement-breakpoint
-ALTER TABLE "documentEmbedding" DROP COLUMN IF EXISTS "embeddings";--> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "account" ADD CONSTRAINT "account_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
@@ -73,12 +86,6 @@ END $$;
 --> statement-breakpoint
 DO $$ BEGIN
  ALTER TABLE "chat" ADD CONSTRAINT "chat_userId_user_id_fk" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE cascade ON UPDATE no action;
-EXCEPTION
- WHEN duplicate_object THEN null;
-END $$;
---> statement-breakpoint
-DO $$ BEGIN
- ALTER TABLE "document" ADD CONSTRAINT "document_chatId_chat_id_fk" FOREIGN KEY ("chatId") REFERENCES "chat"("id") ON DELETE cascade ON UPDATE no action;
 EXCEPTION
  WHEN duplicate_object THEN null;
 END $$;
