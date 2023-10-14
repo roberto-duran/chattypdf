@@ -10,7 +10,7 @@ type PDF = {
   };
 };
 
-export async function generateEmbeddingsFrom(url: string, document_id: number) {
+export async function generateEmbeddingsFrom(url: string) {
   const file_name = `/tmp/doc${Date.now().toString()}.pdf`;
   await downloadPDF(url, file_name);
   if (!file_name) {

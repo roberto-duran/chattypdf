@@ -1,9 +1,13 @@
+import { getMessagesByChatId } from '@/db/models/messages'
 import React from 'react'
 import { BiSend } from 'react-icons/bi'
 
-type Props = {}
+type Props = {
+  chatId: string
+}
 
-export default function Chat ({}: Props) {
+export default async function Chat ({ chatId }: Props) {
+  const messages = await getMessagesByChatId(chatId)
   return (
     <div className='flex flex-col justify-end w-full h-full rounded-lg border-double border-4 border-teal-500 p-4'>
       {/* chat container */}

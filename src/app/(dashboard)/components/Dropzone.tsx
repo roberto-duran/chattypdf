@@ -6,6 +6,7 @@ import { getSignature, generateChatAI } from '@/_actions/ai_file_processor'
 import { BiUpload } from 'react-icons/bi'
 import toast, { Toaster } from 'react-hot-toast'
 import PDFViewer from './PDFViewer'
+import { redirect } from 'next/navigation'
 
 type DropzoneProps = {
   className?: string
@@ -58,7 +59,7 @@ const Dropzone = ({ className }: DropzoneProps) => {
     }).then(res => res.json())
 
     // write to database using server actions
-    await generateChatAI({
+    const newChat = await generateChatAI({
       version: data.version,
       url: data.secure_url,
       original_filename: data.original_filename,
@@ -66,6 +67,9 @@ const Dropzone = ({ className }: DropzoneProps) => {
       public_id: data.public_id,
       size: file.size
     })
+    if (newChat) {
+      redirect(`/dashboard/chat/${newChat}`)
+    }
   }
 
   return (

@@ -10,5 +10,5 @@ export default async function DashboardPage () {
   }
 
   const chat = await getFirstChatByUser(session.user.id)
-  redirect(`/dashboard/${chat ? `chat/${chat.slug}` : 'new'}`)
+  redirect(`/dashboard/${chat ? `chat/${chat.id}/${chat.slug}` : 'new'}`)
 }

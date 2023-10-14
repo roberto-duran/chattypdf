@@ -6,6 +6,7 @@ import { generateEmbeddingsFrom } from "@/lib/langchain";
 import { generateSlug } from "@/utils";
 import { createChat } from "@/db/models/chats";
 import { createDocument, Document } from "@/db/models/documents";
+import { creatBatchDocumentEmbedding } from "@/db/models/documentEmbeddings";
 
 const cloudinaryConfig = cloudinary.config({
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUDNAME,
@@ -61,11 +62,11 @@ export async function generateChatAI({
     if (!session) {
       throw new Error("No session found");
     }
-    const user_id = session.user.id;
-    const chat_id = await createChat({
+    const userId = session.user.id;
+    const newChat = await createChat({
       name: original_filename,
       slug: generateSlug(original_filename),
-      userId: user_id,
+      userId: userId,
     });
 
     const document_id = await createDocument({
@@ -74,10 +75,38 @@ export async function generateChatAI({
       name: original_filename,
       type: "pdf",
       mime: "application/pdf",
-      chatId: chat_id as string,
+      chatId: newChat?.insertedId as string,
     });
 
-    const embeddings = await generateEmbeddingsFrom(url, document_id as number);
-    console.log("embeddings", embeddings);
+    const saveEnbeddings = _save_embeddings(
+      (await generateEmbeddingsFrom(url)) as [],
+      document_id as number
+    );
+
+    if (!saveEnbeddings) {
+      throw new Error("Could not save embeddings");
+    }
+
+    return newChat?.slug;
   }
+}
+
+async function _save_embeddings(embeddings: [], document_id: number) {
+  embeddings.forEach((embedding: any) => {
+    embedding.documentId = document_id;
+  });
+
+  //split the embeddings into chunks of 50
+  const chunkSize = 50;
+  const chunks = [];
+
+  for (let i = 0; i < embeddings.length; i += chunkSize) {
+    chunks.push(embeddings.slice(i, i + chunkSize));
+  }
+
+  chunks.forEach(async (chunk) => {
+    await creatBatchDocumentEmbedding(chunk);
+  });
+
+  return true;
 }

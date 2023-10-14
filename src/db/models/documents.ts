@@ -38,3 +38,17 @@ export const createDocument = async (
     .returning({ insertedId: documents.id });
   return result.length ? result[0].insertedId : null;
 };
+
+export const getDocumentInfoFromChatId = async (chatId: string) => {
+  console.log("chatId", chatId);
+  const result = await db
+    .select({
+      id: documents.id,
+      url: documents.url,
+    })
+    .from(documents)
+    .where(eq(documents.chatId, chatId))
+    .limit(1);
+  console.log(result);
+  return result.length ? result[0] : null;
+};

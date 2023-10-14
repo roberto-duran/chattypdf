@@ -1,10 +1,10 @@
-import { eq, InferInsertModel } from "drizzle-orm";
+import { InferInsertModel } from "drizzle-orm";
 import { db } from "..";
 import { documentEmbeddings } from "@/db/schema";
 
 export type DocumentEmbedding = InferInsertModel<typeof documentEmbeddings>;
 
-export const createChat = async (
+export const createDocumentEmbedding = async (
   documentEmbedding: DocumentEmbedding
 ): Promise<number | null> => {
   const result = await db
@@ -17,4 +17,11 @@ export const createChat = async (
     })
     .returning({ insertedId: documentEmbeddings.id });
   return result.length ? result[0].insertedId : null;
+};
+
+export const creatBatchDocumentEmbedding = async (
+  embeddings: DocumentEmbedding[]
+) => {
+  const result = await db.insert(documentEmbeddings).values(embeddings);
+  return result.length;
 };
