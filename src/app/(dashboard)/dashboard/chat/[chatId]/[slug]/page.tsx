@@ -1,4 +1,4 @@
-import Chat from '@/app/(dashboard)/components/Chat'
+import ChatContainer from '@/app/(dashboard)/components/chat/ChatContainer'
 import PDFViewer from '@/app/(dashboard)/components/PDFViewer'
 import { getDocumentInfoFromChatId } from '@/db/models/documents'
 
@@ -21,7 +21,7 @@ export default async function ChatDetail ({ params }: Params) {
         <PDFViewer file={documentInfo!.url} fullHeight={true} />
       </div>
       <div className='w-full md:w-1/2'>
-        <Chat chatId={params.chatId} />
+        <ChatContainer chatId={params.chatId} />
       </div>
     </section>
   )

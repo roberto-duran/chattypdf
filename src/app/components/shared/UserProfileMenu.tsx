@@ -22,7 +22,7 @@ export default function UserProfileMenu ({ userAvatar }: UserProfileMenuProps) {
       </label>
       <ul
         tabIndex={0}
-        className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52 text-teal-500'
+        className='menu menu-sm dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-lg w-52 bg-gradient-to-r from-slate-700 to-slate-900 border-slate-700 text-teal-300'
       >
         <li>
           <Link href='/dashboard' className='justify-between'>

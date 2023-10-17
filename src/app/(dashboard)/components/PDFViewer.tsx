@@ -1,5 +1,3 @@
-import React from 'react'
-
 type PDFViewerProps = {
   file: File | string
   fullHeight?: boolean

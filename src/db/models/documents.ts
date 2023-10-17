@@ -1,12 +1,12 @@
-import { eq, InferInsertModel } from "drizzle-orm";
-import { db } from "..";
-import { chats, documents } from "@/db/schema";
+import { eq, InferInsertModel } from "drizzle-orm"
+import { db } from ".."
+import { chats, documents } from "@/db/schema"
 
-export type Document = InferInsertModel<typeof documents>;
+export type Document = InferInsertModel<typeof documents>
 
 export const getDocumentById = async (id: number) => {
-  return await db.select().from(documents).where(eq(documents.id, id));
-};
+  return await db.select().from(documents).where(eq(documents.id, id))
+}
 
 export const getFirstDocumentByUser = async (user_id: string) => {
   const result = await db
@@ -18,9 +18,9 @@ export const getFirstDocumentByUser = async (user_id: string) => {
     .from(documents)
     .where(eq(chats.userId, user_id))
     .innerJoin(chats, eq(chats.id, documents.chatId))
-    .limit(1);
-  return result.length ? result[0] : null;
-};
+    .limit(1)
+  return result.length ? result[0] : null
+}
 
 export const createDocument = async (
   document: Document
@@ -35,12 +35,11 @@ export const createDocument = async (
       type: document.type,
       mime: document.mime,
     })
-    .returning({ insertedId: documents.id });
-  return result.length ? result[0].insertedId : null;
-};
+    .returning({ insertedId: documents.id })
+  return result.length ? result[0].insertedId : null
+}
 
 export const getDocumentInfoFromChatId = async (chatId: string) => {
-  console.log("chatId", chatId);
   const result = await db
     .select({
       id: documents.id,
@@ -48,7 +47,7 @@ export const getDocumentInfoFromChatId = async (chatId: string) => {
     })
     .from(documents)
     .where(eq(documents.chatId, chatId))
-    .limit(1);
-  console.log(result);
-  return result.length ? result[0] : null;
-};
+    .limit(1)
+  console.log(result)
+  return result.length ? result[0] : null
+}
