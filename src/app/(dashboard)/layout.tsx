@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   description: 'Chat with your PDFs using the power of AI.'
 }
 
-export default async function DashboardLayout ({
+export default async function DashboardLayout({
   children
 }: {
   children: React.ReactNode
@@ -21,9 +21,9 @@ export default async function DashboardLayout ({
   }
 
   return (
-    <main className='h-screen flex flex-col'>
+    <main className="flex h-screen flex-col">
       <DashboardHeader userAvatar={session?.user.image} />
-      <section className='flex-1'>{children}</section>
+      <section className="flex-1">{children}</section>
     </main>
   )
 }

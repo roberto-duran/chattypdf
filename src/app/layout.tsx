@@ -1,6 +1,7 @@
 import './globals.css'
-import type { Metadata } from 'next'
-import { Poppins } from 'next/font/google'
+import type {Metadata} from 'next'
+import {Poppins} from 'next/font/google'
+import React from "react";
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -12,14 +13,10 @@ export const metadata: Metadata = {
   description: 'Chat with your PDFs using the power of AI.'
 }
 
-export default async function RootLayout ({
-  children
-}: {
-  children: React.ReactNode
-}) {
+export default async function RootLayout({children}: { children: React.ReactNode }) {
   return (
     <html lang='en'>
-      <body className={poppins.className}>{children}</body>
+    <body className={poppins.className}>{children}</body>
     </html>
   )
 }
