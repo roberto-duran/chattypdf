@@ -9,6 +9,7 @@ export default function Button() {
         type="submit"
         className="cool-btn btn btn-circle"
         disabled={pending}
+        aria-label="Submit action"
       >
         {pending ? (
           <i className="loading loading-infinity loading-lg"></i>

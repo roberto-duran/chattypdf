@@ -1,6 +1,6 @@
 {
   "name": "chattypdf",
-  "version": "1.0.0",
+  "version": "0.9.0",
   "private": false,
   "scripts": {
     "dev": "next dev",
@@ -12,7 +12,9 @@
     "next.js",
     "drizzle",
     "cloudinary",
+    "langchain",
     "postgresql",
+    "chat PDF",
     "RAG"
   ],
   "author": {
@@ -30,11 +32,12 @@
     "drizzle-orm": "^0.28.6",
     "eslint": "8.52.0",
     "eslint-config-next": "14.0.0",
-    "langchain": "^0.0.178",
+    "langchain": "^0.0.179",
     "next": "14.0.1",
     "next-auth": "4.24.4",
     "openai": "^4.14.2",
     "pdf-parse": "^1.1.1",
+    "pg": "^8.7.1",
     "postcss": "8.4.31",
     "postgres": "^3.4.3",
     "react": "18.2.0",
@@ -42,11 +45,11 @@
     "react-dropzone": "^14.2.3",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^4.11.0",
-    "sharp": "^0.32.6",
     "tailwindcss": "3.3.5",
     "typescript": "5.2.2"
   },
   "devDependencies": {
+    "@types/pg": "^8.10.7",
     "daisyui": "^3.9.4",
     "drizzle-kit": "^0.19.13",
     "prettier": "^3.0.3",
