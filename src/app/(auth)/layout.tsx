@@ -19,20 +19,17 @@ export const metadata: Metadata = {
   }
 }
 
-export default async function RootLayout ({
+export default async function RootLayout({
   children
 }: {
   children: React.ReactNode
 }) {
-  // if (session) {
-  //   redirect('/')
-  // }
   return (
     <>
-      <main className='flex justify-center items-center h-[91vh] sm:h-[93vh]'>
+      <main className="flex h-[91vh] items-center justify-center sm:h-[93vh]">
         <div
-          className='flex flex-col bg-white h-fit
-            shadow-amber-100 text-gray-800 p-6 rounded-md space-y-6'
+          className="flex h-fit flex-col space-y-6
+            rounded-md bg-white p-6 text-gray-800 shadow-amber-100"
         >
           {children}
         </div>
