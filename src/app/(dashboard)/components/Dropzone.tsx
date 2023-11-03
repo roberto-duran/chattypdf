@@ -2,7 +2,7 @@
 
 import { useCallback, useState } from 'react'
 import { useDropzone } from 'react-dropzone'
-import { getSignature, generateChatAI } from '@/_actions/ai_file_processor'
+import { generateChatAI, getSignature } from '@/app/_actions/ai_file_processor'
 import { BiUpload } from 'react-icons/bi'
 import toast, { Toaster } from 'react-hot-toast'
 import PDFViewer from './PDFViewer'
@@ -38,7 +38,7 @@ const Dropzone = ({ className }: DropzoneProps) => {
     }
   })
 
-  async function handleSubmit () {
+  async function handleSubmit() {
     if (!file) return
 
     // get a signature using server action
@@ -79,19 +79,19 @@ const Dropzone = ({ className }: DropzoneProps) => {
           className: className
         })}
       >
-        <div className='rounded-lg cursor-pointer p-10 outline-dashed outline-2 outline-teal-500 outline-offset-2 bg-white'>
-          <div className='text-xl'>
+        <div className="cursor-pointer rounded-lg bg-white p-10 outline-dashed outline-2 outline-offset-2 outline-teal-500">
+          <div className="text-xl">
             <input {...getInputProps({ name: 'file' })} />
-            <div className='flex flex-col gap-2 items-center justify-start'>
-              <BiUpload className='h-14 w-14 fill-current text-teal-500' />
-              <div className='flex flex-col items-center w-full text-slate-500'>
+            <div className="flex flex-col items-center justify-start gap-2">
+              <BiUpload className="h-14 w-14 fill-current text-teal-500" />
+              <div className="flex w-full flex-col items-center text-slate-500">
                 {isDragActive ? (
                   <p>Drop the file here ...</p>
                 ) : (
                   <p>Drag & drop a file here</p>
                 )}
-                <div className='divider'>OR</div>
-                <button className='btn btn-outline btn-wide bg-gradient-to-r from-slate-700 to-slate-900 border-slate-700 text-teal-300 hover:text-teal-100'>
+                <div className="divider">OR</div>
+                <button className="btn btn-outline btn-wide border-slate-700 bg-gradient-to-r from-slate-700 to-slate-900 text-teal-300 hover:text-teal-100">
                   Browse files
                 </button>
               </div>
@@ -99,15 +99,15 @@ const Dropzone = ({ className }: DropzoneProps) => {
           </div>
         </div>
       </div>
-      <div className='flex flex-col items-center gap-6 mt-10 '>
+      <div className="mt-10 flex flex-col items-center gap-6 ">
         {file ? (
           <div
-            className='tooltip'
-            data-tip='In this iteration only one document is alowed'
+            className="tooltip"
+            data-tip="In this iteration only one document is alowed"
           >
             <button
-              className='btn btn-outline btn-wide cool-btn text-teal-300'
-              type='submit'
+              className="cool-btn btn btn-outline btn-wide text-teal-300"
+              type="submit"
             >
               Use This Document
             </button>
@@ -117,8 +117,8 @@ const Dropzone = ({ className }: DropzoneProps) => {
         )}
         {/* selected PDF container */}
         {file && (
-          <article className='w-full space-y-4'>
-            <h2 className='text-center'>{file.name}</h2>
+          <article className="w-full space-y-4">
+            <h2 className="text-center">{file.name}</h2>
             <PDFViewer file={file} />
           </article>
         )}

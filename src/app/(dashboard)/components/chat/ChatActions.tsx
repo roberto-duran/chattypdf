@@ -1,60 +1,65 @@
 'use client'
 
-import { BiSend } from 'react-icons/bi'
-import React, {useState, ChangeEvent, SetStateAction} from "react";
-import {generateChatAI} from "@/_actions/ai_chat_processor";
-import {Message} from "@/db/models/messages";
+import { ChangeEvent, useRef, useState } from 'react'
+import { generateChatAI } from '@/app/_actions/ai_chat_processor'
+import { Message } from '@/db/models/messages'
+import Button from '@/app/(dashboard)/components/chat/Button'
 
 type ActionsProps = {
-  addMessage: (message: Message) => void;
-  chatId: string;
+  addMessages: (message: Message[]) => void
+  addOptimistic: (message: Message) => void
+  chatId: string
 }
 
-export default function ChatActions ({ addMessage, chatId }: ActionsProps) {
+export default function ChatActions({
+  addMessages,
+  addOptimistic,
+  chatId
+}: ActionsProps) {
+  const refFrom = useRef<HTMLFormElement>(null)
   const [message, setMessage] = useState('')
-  const [loading, setLoading] = useState(false)
 
   const handleMessageChange = (e: ChangeEvent<HTMLInputElement>) => {
     setMessage(e.currentTarget.value)
-    if(e.currentTarget.value === '') {
+    if (e.currentTarget.value === '') {
       return
     }
   }
 
   const handleSubmit = async () => {
-    if(message === '') {
+    if (message === '') {
       return
     }
-    setLoading(true)
+
+    refFrom.current?.reset()
+
     const dataToSave = {
       text: message,
-      author: "user",
+      author: 'user',
       chatId: chatId,
-      id: Math.floor(Math.random() * 1000000)
+      id: Math.floor(Math.random() * 1000000),
+      created_at: new Date()
     } satisfies Message
 
-
-
+    addOptimistic(dataToSave) //optimistic update haha
     const result = await generateChatAI('asdfds', dataToSave)
 
-    setLoading(false)
-    addMessage(result)
-    addMessage(dataToSave) //optimistic update haha
-    setMessage('')
+    addMessages(result as unknown as Message[])
   }
 
   return (
-    <form action={handleSubmit} className='flex gap-4 w-full mt-6'>
+    <form
+      ref={refFrom}
+      action={handleSubmit}
+      className="mt-6 flex w-full gap-4"
+    >
       <input
-        type='text'
-        placeholder='Ask here...'
-        className='input input-bordered input-success w-full rounded-full'
+        type="text"
+        placeholder="Ask here..."
+        className="input input-bordered input-success w-full rounded-full"
         onChange={handleMessageChange}
-        disabled={loading}
       />
-      <button type="submit" className='btn btn-circle cool-btn' disabled={!message || loading}>
-        {loading ? <i className="loading loading-infinity loading-lg"></i> : <BiSend className='h-6 w-6' />}
-      </button>
+      <Button />
     </form>
   )
 }

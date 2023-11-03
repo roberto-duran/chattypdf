@@ -8,6 +8,13 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "tags": [
+    "next.js",
+    "drizzle",
+    "cloudinary",
+    "postgresql",
+    "RAG"
+  ],
   "author": {
     "name": "Roberto Duran",
     "email": "info@robertoduran.me"
