@@ -1,6 +1,6 @@
-import { eq, InferInsertModel } from "drizzle-orm"
-import { db } from ".."
-import { chats, documents } from "@/db/schema"
+import { eq, InferInsertModel } from 'drizzle-orm'
+import { db } from '..'
+import { chats, documents } from '@/db/schema'
 
 export type Document = InferInsertModel<typeof documents>
 
@@ -13,7 +13,7 @@ export const getFirstDocumentByUser = async (user_id: string) => {
     .select({
       slug: chats.slug,
       chatId: documents.chatId,
-      id: documents.id,
+      id: documents.id
     })
     .from(documents)
     .where(eq(chats.userId, user_id))
@@ -33,7 +33,7 @@ export const createDocument = async (
       url: document.url,
       size: document.size,
       type: document.type,
-      mime: document.mime,
+      mime: document.mime
     })
     .returning({ insertedId: documents.id })
   return result.length ? result[0].insertedId : null
@@ -43,7 +43,7 @@ export const getDocumentInfoFromChatId = async (chatId: string) => {
   const result = await db
     .select({
       id: documents.id,
-      url: documents.url,
+      url: documents.url
     })
     .from(documents)
     .where(eq(documents.chatId, chatId))

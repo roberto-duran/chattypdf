@@ -1,8 +1,8 @@
-import { InferInsertModel } from "drizzle-orm";
-import { db } from "..";
-import { documentEmbeddings } from "@/db/schema";
+import { InferInsertModel } from 'drizzle-orm'
+import { db } from '..'
+import { documentEmbeddings } from '@/db/schema'
 
-export type DocumentEmbedding = InferInsertModel<typeof documentEmbeddings>;
+export type DocumentEmbedding = InferInsertModel<typeof documentEmbeddings>
 
 export const createDocumentEmbedding = async (
   documentEmbedding: DocumentEmbedding
@@ -13,15 +13,15 @@ export const createDocumentEmbedding = async (
       documentId: documentEmbedding.documentId,
       embedding: documentEmbedding.embedding,
       documentPage: documentEmbedding.documentPage,
-      documentText: documentEmbedding.documentText,
+      documentText: documentEmbedding.documentText
     })
-    .returning({ insertedId: documentEmbeddings.id });
-  return result.length ? result[0].insertedId : null;
-};
+    .returning({ insertedId: documentEmbeddings.id })
+  return result.length ? result[0].insertedId : null
+}
 
 export const creatBatchDocumentEmbedding = async (
   embeddings: DocumentEmbedding[]
 ) => {
-  const result = await db.insert(documentEmbeddings).values(embeddings);
-  return result.length;
-};
+  const result = await db.insert(documentEmbeddings).values(embeddings)
+  return result.length
+}
